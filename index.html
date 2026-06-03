@@ -10,7 +10,7 @@
   <title>MyLife Dashboard</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #080a10; font-family: "DM Sans", sans-serif; }
+    body { background: #080a10; }
   </style>
 </head>
 <body>
@@ -18,21 +18,17 @@
   <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  <script type="text/babel">
+  <script type="text/babel" data-presets="react">
     const { useState, useEffect } = React;
 
 
 // ─── Storage ───────────────────────────────────────────────────────────────
 const SK = { shifts:"ld_shifts", events:"ld_events", reminders:"ld_reminders", todos:"ld_todos", notes:"ld_notes" };
-async function load(key) {
-  try { const r = await window.storage.get(key); if (r) { try { localStorage.setItem(key, r.value); } catch {} return JSON.parse(r.value); } } catch {}
-  try { const l = localStorage.getItem(key); if (l) return JSON.parse(l); } catch {}
-  return [];
+function load(key) {
+  try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : []; } catch { return []; }
 }
-async function save(key, data) {
-  const j = JSON.stringify(data);
-  try { await window.storage.set(key, j); } catch {}
-  try { localStorage.setItem(key, j); } catch {}
+function save(key, data) {
+  try { localStorage.setItem(key, JSON.stringify(data)); } catch {}
 }
 
 // ─── LBM Shifts ───────────────────────────────────────────────────────────
@@ -608,7 +604,8 @@ export default function App(){
 }
 
 
-    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(React.createElement(App));
   </script>
 </body>
 </html>
